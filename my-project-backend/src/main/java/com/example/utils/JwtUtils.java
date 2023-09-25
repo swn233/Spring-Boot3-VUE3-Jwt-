@@ -9,6 +9,7 @@ import com.auth0.jwt.interfaces.DecodedJWT;
 import jakarta.annotation.Resource;
 import org.springframework.beans.factory.annotation.Value;
 import org.springframework.boot.context.properties.ConfigurationProperties;
+import org.springframework.data.redis.core.RedisTemplate;
 import org.springframework.data.redis.core.StringRedisTemplate;
 import org.springframework.security.core.GrantedAuthority;
 import org.springframework.security.core.userdetails.User;
@@ -23,14 +24,14 @@ import java.util.UUID;
 import java.util.concurrent.TimeUnit;
 
 //读取配置文件中的属性
-//@ConfigurationProperties(prefix = "spring.security.jwt")
+
 @Component
 public class JwtUtils {
-//    @Value("${spring.security.jwt.key}")
+    @Value("${spring.security.jwt.key}")
 //Jwt秘钥
-    private  final String key="abcdefghijk";
-//    @Value("${spring.security.jwt.expire}")
-    private   final int   expire=7;
+    private   String key;
+    @Value("${spring.security.jwt.expire}")
+    private    int   expire;
     @Resource
     StringRedisTemplate template;
 

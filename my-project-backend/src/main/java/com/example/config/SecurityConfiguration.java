@@ -1,13 +1,17 @@
 package com.example.config;
 
 import com.example.entity.RestBean;
+import com.example.entity.dto.Account;
 import com.example.entity.vo.response.AuthorizeVO;
 import com.example.filter.JwtAuthorrizeFilter;
+import com.example.service.AccountService;
 import com.example.utils.JwtUtils;
 import jakarta.annotation.Resource;
 import jakarta.servlet.ServletException;
 import jakarta.servlet.http.HttpServletRequest;
 import jakarta.servlet.http.HttpServletResponse;
+import org.apache.catalina.mbeans.MBeanUtils;
+import org.springframework.beans.BeanUtils;
 import org.springframework.context.annotation.Bean;
 import org.springframework.context.annotation.Configuration;
 import org.springframework.security.access.AccessDeniedException;
@@ -34,6 +38,9 @@ public class SecurityConfiguration {
     JwtUtils utils;
     @Resource
     JwtAuthorrizeFilter jwtAuthorrizeFilter;
+
+    @Resource
+    AccountService service;
     @Bean
     public SecurityFilterChain filterChain(HttpSecurity http) throws Exception {
             return http
@@ -72,12 +79,20 @@ public class SecurityConfiguration {
 
 
         User user=(User)authentication.getPrincipal();
-        String token =utils.createJwt(user,1,"小明");
-        AuthorizeVO vo =new AuthorizeVO();
-        vo.setExpire(utils.expireTime());
-        vo.setRole("admin");
+        Account account=service.findAccountByNameOrEmail(user.getUsername());
+
+
+        String token =utils.createJwt(user,account.getId(),account.getUsername());
+
+        AuthorizeVO vo=account.asViewObject(AuthorizeVO.class,viewobject->{
+            viewobject.setExpire(utils.expireTime());
+            viewobject.setToken(token);
+        });
+
         vo.setToken(token);
-        vo.setUsername(user.getUsername());
+//        BeanUtils.copyProperties(account,vo);
+//        vo.setRole(account.getRole());
+//        vo.setUsername(account.getUsername());
 
         response.getWriter().write(RestBean.success(vo).asJsonString());
         System.out.println(RestBean.success(token).asJsonString());
