@@ -89,7 +89,7 @@ public class SecurityConfiguration {
             viewobject.setToken(token);
         });
 
-        vo.setToken(token);
+
 //        BeanUtils.copyProperties(account,vo);
 //        vo.setRole(account.getRole());
 //        vo.setUsername(account.getUsername());
