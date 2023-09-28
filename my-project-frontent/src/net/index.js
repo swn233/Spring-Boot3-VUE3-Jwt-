@@ -94,4 +94,8 @@ function logout(success,failure=defaultFailure){
     },failure)
 }
 
-export {login,logout,get,post}
+function unauthorized(){
+    return  !takeAccessToken()
+}
+
+export {login,logout,get,post,unauthorized}
