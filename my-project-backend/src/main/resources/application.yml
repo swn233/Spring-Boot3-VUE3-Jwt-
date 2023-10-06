@@ -8,3 +8,13 @@ spring:
     password: yyt320581
     url: jdbc:mysql://localhost:3306/vue-database
     driver-class-name: com.mysql.cj.jdbc.Driver
+  mail:
+    host: smtp.163.com
+    username: 18061946436@163.com
+    password:  WPXQSXPXMSMASPGJ
+#  TMINXNFRNYTMDLMS
+  rabbitmq:
+    username: guest
+    password: guest
+    addresses: localhost
+    virtual-host: /
