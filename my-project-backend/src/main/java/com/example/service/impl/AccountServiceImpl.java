@@ -1,7 +1,10 @@
 package com.example.service.impl;
 
+import com.baomidou.mybatisplus.core.conditions.Wrapper;
+import com.baomidou.mybatisplus.core.toolkit.Wrappers;
 import com.baomidou.mybatisplus.extension.service.impl.ServiceImpl;
 import com.example.entity.dto.Account;
+import com.example.entity.vo.EmailRegisterVO;
 import com.example.mapper.AccountMapper;
 import com.example.service.AccountService;
 import com.example.utils.Const;
@@ -13,9 +16,11 @@ import org.springframework.security.core.GrantedAuthority;
 import org.springframework.security.core.userdetails.User;
 import org.springframework.security.core.userdetails.UserDetails;
 import org.springframework.security.core.userdetails.UsernameNotFoundException;
+import org.springframework.security.crypto.password.PasswordEncoder;
 import org.springframework.stereotype.Service;
 
 import java.util.Collection;
+import java.util.Date;
 import java.util.Map;
 import java.util.Random;
 import java.util.concurrent.TimeUnit;
@@ -31,6 +36,10 @@ public class AccountServiceImpl extends ServiceImpl<AccountMapper, Account> impl
 
     @Resource
     StringRedisTemplate template;
+
+    @Resource
+    PasswordEncoder encoder;
+
     @Override
     public UserDetails loadUserByUsername(String username) throws UsernameNotFoundException {
         Account account=this.findAccountByNameOrEmail(username);
@@ -70,7 +79,42 @@ return this.query()
             }
         }
     }
-  private boolean verifyLimit(String ip){
+
+    @Override
+    public String registerEmailAccount(EmailRegisterVO vo) {
+        String email=vo.getEmail();
+        String username=vo.getUsername();
+        String code=template.opsForValue().get(Const.VERIFY_EMAIL_DATA+email);
+        if (code==null){
+            return "请先获取验证码";
+        }
+        if (!code.equals(vo.getCode())){
+            return "验证码错误";
+        }
+        if (this.existsAccountByEmail(email)){
+            return "此电子邮件已被其他用户注册";
+        }
+        if (this.existsAccountByUsername(vo.getUsername())){
+            return "此用户名已被其他用户注册，请更新一个新的用户名";
+        }
+        String password= encoder.encode(vo.getPassword());
+        Account account=new Account(null,username,password,email,"user",new Date());
+        if (this.save(account)){
+            template.delete(Const.VERIFY_EMAIL_DATA+email);
+            return null;
+        }else {
+            return "内部错误";
+        }
+    }
+
+    private boolean existsAccountByEmail(String email){
+        return this.baseMapper.exists(Wrappers.<Account>query().eq("email",email));
+    }
+
+    private boolean existsAccountByUsername(String username){
+        return this.baseMapper.exists(Wrappers.<Account>query().eq("username",username));
+    }
+    private boolean verifyLimit(String ip){
         String key= Const.VERIFY_EMAIL_LIMIT+ip;
         return flowUtils.limitOnceCheck(key,60);
   }
