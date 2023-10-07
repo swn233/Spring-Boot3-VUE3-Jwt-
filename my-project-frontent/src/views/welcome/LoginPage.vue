@@ -1,5 +1,5 @@
 <script setup>
-import {reactive,ref}from 'vue'
+import {reactive,ref, Transition}from 'vue'
 import {User,Lock} from '@element-plus/icons-vue'
 import {login} from "@/net";
 import router from "@/router";
@@ -31,6 +31,7 @@ function userLogin(){
 </script>
 
 <template>
+  <div>
   <div style="text-align: center;margin:0 20px">
     <div style="margin-top: 150px">
       <div style="font-size: 25px;font-weight: bold">登录</div>
@@ -72,7 +73,8 @@ function userLogin(){
     <span style="font-size: 14px;color: grey">没有账号</span>
   </el-divider>
   <div style="text-align: center">
-    <el-button style="width: 270px" type="warning" plain>立即注册</el-button>
+    <el-button @click="router.push('/register')" style="width: 270px" type="warning" plain>立即注册</el-button>
+  </div>
   </div>
 </template>
 
