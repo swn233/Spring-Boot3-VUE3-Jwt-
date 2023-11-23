@@ -11,6 +11,6 @@ import org.springframework.context.annotation.Configuration;
 public class RabbitConfig {
  @Bean("emailQueue")
     public Queue emailQueue(){
-        return   QueueBuilder.durable("mail").build();
+        return   QueueBuilder.durable("mail1").build();
     }
 }

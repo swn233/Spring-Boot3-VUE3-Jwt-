@@ -1,5 +1,6 @@
 package com.example;
 
+import com.rabbitmq.client.Channel;
 import com.rabbitmq.client.Connection;
 import com.rabbitmq.client.ConnectionFactory;
 import jakarta.annotation.Resource;
@@ -43,6 +44,36 @@ class MyProjectBackendApplicationTests {
 		//OK，万事俱备只欠发送
 		sender.send(message);
 	}
+
+	@Test
+	void contextLoads1(){
+		 String QUEUE_NAME = "mail";
+
+			ConnectionFactory factory = new ConnectionFactory();
+			factory.setHost("localhost"); // 设置 RabbitMQ 服务器的主机名
+
+			try (Connection connection = factory.newConnection();
+				 Channel channel = connection.createChannel()) {
+
+				// 声明要清空的队列
+				channel.queueDeclare(QUEUE_NAME, false, false, false, null);
+
+				// 获取队列中的消息数量
+				int messageCount = channel.queueDeclarePassive(QUEUE_NAME).getMessageCount();
+
+				// 循环消费队列中的消息，直到清空队列
+				for (int i = 0; i < messageCount; i++) {
+					channel.basicGet(QUEUE_NAME, true); // 消费并确认消息
+				}
+
+				System.out.println("队列已成功清空。");
+
+			} catch (Exception e) {
+				e.printStackTrace();
+			}
+		}
+
+
 
 //	@Test
 //	void contextLoads1() {

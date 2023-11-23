@@ -5,6 +5,8 @@ import com.baomidou.mybatisplus.core.toolkit.Wrappers;
 import com.baomidou.mybatisplus.extension.service.impl.ServiceImpl;
 import com.example.entity.dto.Account;
 import com.example.entity.vo.EmailRegisterVO;
+import com.example.entity.vo.request.EmailResetVO;
+import com.example.entity.vo.response.ConfirmResetVO;
 import com.example.mapper.AccountMapper;
 import com.example.service.AccountService;
 import com.example.utils.Const;
@@ -68,7 +70,7 @@ return this.query()
                 //确保code为六位数
                 int code = random.nextInt(899999) + 100000;
                 Map<String, Object> data = Map.of("type", type, "email", email, "code", code);
-                amqpTemplate.convertAndSend("mail", data);
+                amqpTemplate.convertAndSend("mail1", data);
                 System.out.println("发送邮箱为："+data);
 
                 template.opsForValue()
@@ -105,6 +107,29 @@ return this.query()
         }else {
             return "内部错误";
         }
+    }
+
+    @Override
+    public String resetConfirm(ConfirmResetVO vo) {
+        String email=vo.getEmail();
+        String code=template.opsForValue().get(Const.VERIFY_EMAIL_DATA+email);
+        if (code==null)return "请先获取验证码";
+        if(!code.equals(vo.getCode())) return "验证码错误，请重新输入";
+        return null;
+    }
+
+    @Override
+    public String resetEmailAccountPassword(EmailResetVO vo) {
+        String email=vo.getEmail();
+        String verify=this.resetConfirm(new ConfirmResetVO(vo.getEmail(),vo.getCode()));
+        if(verify!=null)return verify;
+        String password= encoder.encode(vo.getPassword());
+        boolean update=this.update().eq("email",email).set("password",password).update();
+        if (update){
+            template.delete(Const.VERIFY_EMAIL_DATA+email);
+
+        }
+        return null;
     }
 
     private boolean existsAccountByEmail(String email){

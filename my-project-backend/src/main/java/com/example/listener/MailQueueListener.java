@@ -11,7 +11,7 @@ import org.springframework.stereotype.Component;
 import java.util.Map;
 
 @Component
-@RabbitListener(queues = "mail")
+@RabbitListener(queues = "mail1")
 public class MailQueueListener {
     @Resource
     JavaMailSender sender;
