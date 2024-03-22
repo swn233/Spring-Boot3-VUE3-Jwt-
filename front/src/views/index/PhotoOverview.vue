@@ -7,7 +7,8 @@ import {post} from '../../net/index'
 import {ElMessage} from "element-plus";
 import router from "@/router"
 import {ArrowUp} from "@element-plus/icons-vue";
-
+const container=ref()
+const imageContainer=ref()
 const urls = ref([
   // 'https://fuss10.elemecdn.com/a/3f/3302e58f9a181d2509f3dc0fa68b0jpeg.jpeg',
   // 'https://s2.loli.net/2023/12/08/vc8P5tFisApqMY4.jpg',
@@ -51,7 +52,7 @@ function imageGet(){
 }
 
 onMounted(() => {
-  imageGet()
+  imageGet();
 })
 </script>
 
@@ -64,7 +65,7 @@ onMounted(() => {
 
   </el-container>
 
-  <div class="image-container">
+  <div class="image-container" ref="imageContainer">
     <div class="image-column" v-for="(col, index_col) in imageColumns" :key="index_col">
       <el-image
           class="image-item"
@@ -77,13 +78,14 @@ onMounted(() => {
           :zoom-rate="1.1"
           :max-scale="1.5"
           :min-scale="0.5"
-          lazy
+          loading="lazy"
+          :scroll-container="container"
       />
     </div>
   </div>
   <el-container>
     <el-affix :offset="800" style="width: 100%; text-align:center;height: 60px;z-index: 50">
-      <div style="border-top-left-radius: 10px;border-top-right-radius:10px ; width:100%;height: 60px; background-color: #eaeaea;"></div>
+      <div style="border-top-left-radius: 10px;border-top-right-radius:10px ; width:100vw;height: 60px; background-color: #eaeaea;"></div>
     </el-affix>
   </el-container>
   </div>
@@ -101,7 +103,7 @@ onMounted(() => {
   width: 32.6%;/* 每行占据父容器的 1/3 宽度 */
   display: flex;
   flex-direction: column;
-  margin: 5px 5px; /* 调整行与行之间的间距，根据需要进行调整 */
+  margin: 0.03% 0.03%; /* 调整行与行之间的间距，根据需要进行调整 */
   flex-wrap: wrap;
 }
 

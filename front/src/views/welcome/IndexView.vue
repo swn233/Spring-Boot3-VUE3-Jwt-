@@ -28,7 +28,7 @@ const onscroll: ({ scrollTop: number, scrollLeft: number }) => void = ({ scrollT
 function backup() {
   const start = scrolltop.value; // 获取当前滚动位置
   const end = 0; // 滚动到顶部的位置
-  const duration = 500; // 过渡时间，单位是毫秒
+  const duration = 1000; // 过渡时间，单位是毫秒
 
   const startTime = performance.now(); // 获取动画开始时间
 
