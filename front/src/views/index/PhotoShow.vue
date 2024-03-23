@@ -24,9 +24,11 @@ function imageGet(){
 
 // 实现图片渐入效果
 //为每一个图片添加一个当前透明度和阴影，x轴y轴偏移
+
 let prevOpacity={};
 let imageElement;
 let shadow="10px 10px 5px rgb(44, 43, 43)";
+let translate="0 0 0";
 function createObserver() {
   let observer;
   let options = {
@@ -66,6 +68,7 @@ function handleIntersect(entries, observer) {
     if (entry.intersectionRatio > prevOpacity[entry.target.src]) {
       entry.target.style.opacity = entry.intersectionRatio;
       entry.target.style.boxShadow=shadow;
+      entry.target.style.translate=translate;
       prevOpacity[entry.target.src] = entry.intersectionRatio;
     } 
     // else {
@@ -76,7 +79,6 @@ function handleIntersect(entries, observer) {
     // }
   });
 }
-
 
 onMounted(() => {
   imageGet();
@@ -93,7 +95,7 @@ onUpdated(() => {
 <template>
   <div class="image-container" style="overflow:auto;height: 100vh;scrollbar-width: none;">
     <div  ref="imageElement" :class="{'odd-image':index%2!==0}" style="margin: 10vh;display: flex" v-for="(img,index) in urls" >
-      <img   loading="lazy" style="height: 56vh"  class="picture" :src="img" :key="index"   alt="this a picture"/>
+      <img   loading="lazy" style="height: 56vh"  :class="['picture',{'odd-image':index%2!==0}]" :src="img" :key="index"   alt="this a picture"/>
       <div style="width: 100%;text-align: center;display: flex;flex-direction: column ;justify-content: center;">
         <div class="font">{{place[index]}}</div>
         <div class="font">{{theme[index]}}</div>
@@ -105,14 +107,19 @@ onUpdated(() => {
 <style scoped>
 .picture{
   transition: opacity 1s,
-  box-shadow 1s;
+  box-shadow 1s,
+  translate 1s;
   opacity: 0;
   box-shadow: 0 0 0 rgb(255, 255, 255);
+  translate: -2rem 2rem -50px;
+
 }
 
 .odd-image{
   text-align: right;
   flex-direction: row-reverse;
+  translate: 2rem 2rem -50px;
+
 }
 .font {
   font-family:  freight-big-pro, serif;
