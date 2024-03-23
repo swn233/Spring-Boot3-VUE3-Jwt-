@@ -7,8 +7,7 @@ import {post} from '../../net/index'
 import {ElMessage} from "element-plus";
 import router from "@/router"
 import {ArrowUp} from "@element-plus/icons-vue";
-const container=ref()
-const imageContainer=ref()
+
 const urls = ref([
   // 'https://fuss10.elemecdn.com/a/3f/3302e58f9a181d2509f3dc0fa68b0jpeg.jpeg',
   // 'https://s2.loli.net/2023/12/08/vc8P5tFisApqMY4.jpg',
@@ -65,7 +64,7 @@ onMounted(() => {
 
   </el-container>
 
-  <div class="image-container" ref="imageContainer">
+  <div class="image-container" >
     <div class="image-column" v-for="(col, index_col) in imageColumns" :key="index_col">
       <el-image
           class="image-item"
@@ -79,7 +78,7 @@ onMounted(() => {
           :max-scale="1.5"
           :min-scale="0.5"
           loading="lazy"
-          :scroll-container="container"
+         
       />
     </div>
   </div>
@@ -105,10 +104,10 @@ onMounted(() => {
   flex-direction: column;
   margin: 0.03% 0.03%; /* 调整行与行之间的间距，根据需要进行调整 */
   flex-wrap: wrap;
-}
+  }
 
 .image-item {
-  margin-top: 10px;
+    margin-top: 10px;
   width: 100%; /* 图片占据行的 30% 宽度，留出一些空白间距 */
   opacity: 0.95; /* 初始时设置透明度为 0 */
   transition-property: opacity;

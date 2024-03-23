@@ -70,7 +70,7 @@ onMounted(()=>{
     <el-container style="width: 100vw; height: 100vh;">
       <el-aside class="showMenu" style="background-color: white;overflow-y: hidden" width="0px">
         <!--        icon-->
-        <el-affix :offset="10" style="text-align: left;margin-left:70px;height: 0px">
+        <el-affix :offset="10" style="text-align: left;margin-left:2.5em;height: 0px">
           <el-image  class="image" style="width: 50px" src="https://s2.loli.net/2023/12/21/jxC7e5nNRvHpdDJ.png"></el-image>
         </el-affix>
         <div class="shadow" style="border-top-right-radius:10px;background-color:#eaeaea; height: 100px"></div>
@@ -123,9 +123,9 @@ onMounted(()=>{
 <!--内容页面-->
       <el-container>
         <div class="scrollObj" style="background-color: white;width: 100%;height: 100%;" >
-          <el-scrollbar ref="scrollbarRef" @scroll="onscroll">
+          <el-scrollbar  ref="scrollbarRef" @scroll="onscroll">
           <!--        backup-->
-          <div style="position: absolute;right: 50px">
+          <div style="position: absolute;right: 50px;">
             <el-affix  :offset="10" style="text-align:center;margin-left:100px;height: 0px">
               <el-button class="shadow" @click="backup" size="large" style="width:35px; background-color: #f6f6f6 ;border-radius: 100px;border:0px" :icon="ArrowUp" dark />
             </el-affix>
@@ -155,7 +155,7 @@ onMounted(()=>{
   line-height: 1em;
   color: black;
   text-align: left; /* 文字左对齐 */
-  text-indent: 3.5em; /* 第一个字母左缩进一个字母的宽度 */
+  text-indent: 0.5em; /* 第一个字母左缩进一个字母的宽度 */
 }
 
 .showMenu {
@@ -166,8 +166,9 @@ onMounted(()=>{
 
 .image:hover ,
 .showMenu:hover {
-  width: 350px;
+  width: 244px;
 }
+
 .shadow{
   transition: box-shadow 0.3s;
 }
