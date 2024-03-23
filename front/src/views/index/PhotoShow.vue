@@ -23,10 +23,10 @@ function imageGet(){
 }
 
 // 实现图片渐入效果
-//为每一个图片添加一个当前透明度
+//为每一个图片添加一个当前透明度和阴影，x轴y轴偏移
 let prevOpacity={};
 let imageElement;
-
+let shadow="10px 10px 5px rgb(44, 43, 43)";
 function createObserver() {
   let observer;
   let options = {
@@ -47,7 +47,7 @@ function createObserver() {
 
 function buildThresholdList() {
   let thresholds = [];
-  let numSteps = 100;
+  let numSteps = 3;
 
   for (let i = 1.0; i <= numSteps; i++) {
     let opacity= i / numSteps;
@@ -65,6 +65,7 @@ function handleIntersect(entries, observer) {
     // console.log(prevOpacity[entry.target.src] );
     if (entry.intersectionRatio > prevOpacity[entry.target.src]) {
       entry.target.style.opacity = entry.intersectionRatio;
+      entry.target.style.boxShadow=shadow;
       prevOpacity[entry.target.src] = entry.intersectionRatio;
     } 
     // else {
@@ -103,8 +104,10 @@ onUpdated(() => {
 </template>
 <style scoped>
 .picture{
-  transition: opacity  0.3s;
+  transition: opacity 1s,
+  box-shadow 1s;
   opacity: 0;
+  box-shadow: 0 0 0 rgb(255, 255, 255);
 }
 
 .odd-image{
