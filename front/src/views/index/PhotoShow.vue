@@ -87,7 +87,6 @@ onMounted(() => {
 onUpdated(() => {
   imageElement=document.querySelectorAll(".picture");
   createObserver();
-  console.log("update");
 })
 
 </script>

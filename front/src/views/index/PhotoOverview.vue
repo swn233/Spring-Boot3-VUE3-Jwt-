@@ -1,10 +1,10 @@
 <script setup>
 import { ref, computed } from 'vue';
 import {get}from '@/net'
-import { onMounted,onBeforeMount  } from 'vue'
+import { onMounted,onBeforeMount,onUpdated } from 'vue'
 import axios from "axios";
 import {post} from '../../net/index'
-import {ElMessage} from "element-plus";
+import {ElImage, ElMessage, componentSizeMap} from "element-plus";
 import router from "@/router"
 import {ArrowUp} from "@element-plus/icons-vue";
 
@@ -50,8 +50,72 @@ function imageGet(){
   })
 }
 
+//为图片添加渐入效果
+
+let prevOpacity={};
+let imageElement=[];
+let shadow="3px 3px 5px rgb(44,44,44)";
+
+function createObserver(){
+  let observer;
+  let options={
+    root:document.querySelector(".image-container"),
+    rootMargin:"0px",
+    threshld:buildThresholdlist(),
+  };
+
+  observer=new IntersectionObserver(handleIntersect,options);
+  imageElement.forEach((item,index) => {
+    item.setAttribute("id",index);
+    // console.log(item.getAttribute("id"));
+    prevOpacity[item.getAttribute("id")] = 0;
+    observer.observe(item);
+  });
+}
+
+function buildThresholdlist() {
+  let thresholds = [];
+  let numSteps = 3;
+
+  for (let i = 1.0; i <= numSteps; i++) {
+    let opacity= i / numSteps;
+    thresholds.push(opacity);
+  }
+
+  thresholds.push(0);
+  return thresholds;
+}
+
+function handleIntersect(entries, observer) {
+  entries.forEach((entry) => {
+    
+    // console.log(prevOpacity[entry.target.src] );
+    if (entry.intersectionRatio > prevOpacity[entry.target.getAttribute("id")]) {
+      if(entry.target.getAttribute("id")==25){
+    console.log(entry.intersectionRatio);
+    }
+      // entry.target.style.opacity = entry.intersectionRatio;
+      if(entry.target.getAttribute("id")==25){
+        console.log(entry.target.getAttribute("id")+"::"+entry.target.style.opacity);
+      }
+      // if(entry.target.style.opacity>0.9){
+      //   entry.target.style.opacity=0.9;
+      // }
+      entry.target.style.boxShadow=shadow;
+      // entry.target.style.translate=translate;
+      prevOpacity[entry.target.getAttribute("id")] = entry.intersectionRatio;
+    } 
+   
+  });
+}
+
 onMounted(() => {
   imageGet();
+})
+
+onUpdated(()=>{
+  imageElement=document.querySelectorAll(".image-item");
+  createObserver();
 })
 </script>
 
@@ -64,9 +128,9 @@ onMounted(() => {
 
   </el-container>
 
-  <div class="image-container" >
+  <div class="image-container" style="height: 100vh;scrollbar-width: none;">
     <div class="image-column" v-for="(col, index_col) in imageColumns" :key="index_col">
-      <el-image
+      <ElImage
           class="image-item"
           v-for="(url,index) in col"
           :key="url"
@@ -78,7 +142,6 @@ onMounted(() => {
           :max-scale="1.5"
           :min-scale="0.5"
           loading="lazy"
-         
       />
     </div>
   </div>
@@ -107,11 +170,12 @@ onMounted(() => {
   }
 
 .image-item {
-    margin-top: 10px;
+  margin-top: 10px;
   width: 100%; /* 图片占据行的 30% 宽度，留出一些空白间距 */
-  opacity: 0.95; /* 初始时设置透明度为 0 */
-  transition-property: opacity;
-  transition-duration: 0.1s;
+  opacity: 0.9; /* 初始时设置透明度为 0 */
+  transition: opacity 0.5s,
+  box-shadow 0.5s;
+  box-shadow: 0 0 0 rgb(255, 255, 255);
 }
 
 .image-item:hover{
